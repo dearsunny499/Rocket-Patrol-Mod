@@ -6,7 +6,9 @@ class Play extends Phaser.Scene {
 		// load images/tile sprites
 		this.load.image('rocket', './assets/paw_shooter.png');
 		this.load.image('spaceship', './assets/cat_rocket.png');
-		this.load.image('starfield', './assets/starfield.png');
+		this.load.image('starfield', './assets/pink-background.png');
+		this.load.image('ocean', './assets/ocean.png');
+		this.load.image('beach', './assets/beach.png');
 		
 		// load spritesheet
 		this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
@@ -14,6 +16,8 @@ class Play extends Phaser.Scene {
 	create() {
 		// place tile sprite
 		this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
+		this.ocean = this.add.tileSprite(0, 0, 640, 480, 'ocean').setOrigin(0, 0);
+		this.beach = this.add.tileSprite(0, 0, 640, 480, 'beach').setOrigin(0, 0);
 		
 		// set UI sizes
 		let borderUISize = game.config.height / 15;
@@ -87,7 +91,8 @@ class Play extends Phaser.Scene {
 			this.scene.start("menuScene");
 		}
 		
-		this.starfield.tilePositionX -= 4;
+		this.ocean.tilePositionX -= 2;
+		this.beach.tilePositionX -= 4;
 		
 		if (!this.gameOver) {               
 			this.p1Rocket.update();         // update rocket sprite
