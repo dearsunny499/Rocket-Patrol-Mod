@@ -5,6 +5,7 @@ class Play extends Phaser.Scene {
 	preload() {
 		// load images/tile sprites
 		this.load.image('rocket', './assets/paw_shooter.png');
+		this.load.image('P2rocket', './assets/paw_yellow_shooter.png');
 		this.load.image('spaceship', './assets/cat_rocket.png');
 		this.load.image('starfield', './assets/pink-background.png');
 		this.load.image('ocean', './assets/ocean.png');
@@ -23,22 +24,22 @@ class Play extends Phaser.Scene {
 		let borderUISize = game.config.height / 15;
 		let borderPadding = borderUISize / 3;
 		
-		// green UI background
-		this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
-		// white borders
-		this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-		this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-		this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-		this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
 		
 		// define keys
 		keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 		keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+		keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+		keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 		keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 		keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+		keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+		keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 		  
 		// add rocket (p1)
 		this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+		
+		// add rocket (p2) if in 2P mode
+		this.p2Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'P2rocket').setOrigin(0.5, 0);
 		
 		// add spaceships (x3)
 		this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
@@ -52,8 +53,17 @@ class Play extends Phaser.Scene {
 			frameRate: 30
 		});
 		
+		// green UI background
+		this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+		// white borders
+		this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
+		this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
+		this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+		this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+		
 		// initialize score
 		this.p1Score = 0;
+		this.p2Score = 0;
 		
 		// display score
 		let scoreConfig = {
@@ -69,6 +79,8 @@ class Play extends Phaser.Scene {
 			fixedWidth: 100
 		}
 		this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+		this.scoreRight = this.add.text(game.config.width - scoreConfig.fixedWidth - borderUISize - borderPadding, 
+		borderUISize + borderPadding * 2, this.p2Score, scoreConfig);
 		
 		// GAME OVER flag
 		this.gameOver = false;
@@ -95,8 +107,9 @@ class Play extends Phaser.Scene {
 		this.beach.tilePositionX -= 4;
 		
 		if (!this.gameOver) {               
-			this.p1Rocket.update();         // update rocket sprite
-			this.ship01.update();           // update spaceships (x3)
+			this.p1Rocket.update(keyA, keyD, keyF);
+			this.p2Rocket.update(keyLEFT, keyRIGHT, keySPACE);
+			this.ship01.update();
 			this.ship02.update();
 			this.ship03.update();
 		} 
@@ -114,6 +127,7 @@ class Play extends Phaser.Scene {
 			this.p1Rocket.reset();
 			this.shipExplode(this.ship01);
 		}
+		
 	}
 	checkCollision(rocket, ship) {
 		// simple AABB checking
