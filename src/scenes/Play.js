@@ -54,12 +54,12 @@ class Play extends Phaser.Scene {
 		});
 		
 		// green UI background
-		this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+		this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x34d2ff).setOrigin(0, 0);
 		// white borders
-		this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-		this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-		this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-		this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+		this.add.rectangle(0, 0, game.config.width, borderUISize, 0xf8f3a7).setOrigin(0, 0);
+		this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xf8f3a7).setOrigin(0, 0);
+		this.add.rectangle(0, 0, borderUISize, game.config.height, 0xf8f3a7).setOrigin(0, 0);
+		this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xf8f3a7).setOrigin(0, 0);
 		
 		// initialize score
 		this.p1Score = 0;
@@ -67,10 +67,9 @@ class Play extends Phaser.Scene {
 		
 		// display score
 		let scoreConfig = {
-			fontFamily: 'Courier',
+			fontFamily: 'Optima',
 			fontSize: '28px',
-			backgroundColor: '#F3B141',
-			color: '#843605',
+			color: '#FFFFFF',
 			align: 'right',
 			padding: {
 				top: 5,
@@ -108,7 +107,7 @@ class Play extends Phaser.Scene {
 		
 		if (!this.gameOver) {               
 			this.p1Rocket.update(keyA, keyD, keyF);
-			this.p2Rocket.update(keyLEFT, keyRIGHT, keySPACE);
+			this.p2Rocket.update(keyLEFT, keyRIGHT, keyENTER);
 			this.ship01.update();
 			this.ship02.update();
 			this.ship03.update();
@@ -128,6 +127,19 @@ class Play extends Phaser.Scene {
 			this.shipExplode(this.ship01);
 		}
 		
+		if(this.checkCollision(this.p2Rocket, this.ship03)) {
+			this.p2Rocket.reset();
+			this.shipExplode(this.ship03);   
+		}
+		if (this.checkCollision(this.p2Rocket, this.ship02)) {
+			this.p2Rocket.reset();
+			this.shipExplode(this.ship02);
+		}
+		if (this.checkCollision(this.p2Rocket, this.ship01)) {
+			this.p2Rocket.reset();
+			this.shipExplode(this.ship01);
+		}
+		 
 	}
 	checkCollision(rocket, ship) {
 		// simple AABB checking
